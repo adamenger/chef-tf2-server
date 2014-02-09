@@ -6,7 +6,7 @@ default['tf2-server']['user']  = 'tf2-server'
 default['tf2-server']['group'] = 'tf2-server'
 
 default['tf2-server']['ssh']['public_keys'] = [
-  'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5QTlAwK96FpjIV239i79xXxHv1sEYUVogFKwEjQmA6yYFNwz39/yviz053LbpJ8KaQPNCwzjBH9Luie8K6xDD7bH18Kh8HxPIUhQl8eFuPqw1dOh2hpSZMH1Qwp8P9MavD8yKpTeP9lekJVf40eC1XQM59K4EEaiVcSxyiUnk0m94SjjAyRJpx9/AYKVKLAoSVt7QGFPCD0w/D0ZGmvI6M5tKdM0XD9hrzBcw+h8cUY9dB4tvHoPa7wSC/WQLtMdxKFU7H5WJlgKtj6QddtmEhZw+d7z54IUDR+PGBrmggFYBZdHWVLhWyXaUN1WrIpvaOOY4PPSe/wnZrhiTPJwl adam@adam-enger',
+ 'your-public-key'
 ]
 
 default['tf2-server']['packages']['debian'] = ['lib32gcc1', 'ia32-libs']
