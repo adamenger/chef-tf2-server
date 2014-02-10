@@ -44,6 +44,8 @@ remote_file "/home/#{node['tf2-server']['user']}/steamcmd_linux.tar.gz" do
   action :create_if_missing
 end
 
+# downloads the tf2 application initially and keeps it up to date.
+# needs to be run after first succesful chef converge to install tf2
 template "/home/#{node['tf2-server']['user']}/update.sh" do
   source "update.sh.erb"
   user   node['tf2-server']['user']
@@ -53,23 +55,27 @@ template "/home/#{node['tf2-server']['user']}/update.sh" do
     })
 end
 
+# TODO: find a better way to do this? 
 execute "set execute permissions on update script" do
   command "chmod +x update.sh"
   cwd     "/home/#{node['tf2-server']['user']}"
 end
 
+# directory which steam client is installed to
 directory node['tf2-server']['steam']['install_dir'] do
   action :create
   user   node['tf2-server']['user']
   group  node['tf2-server']['group']
 end
 
+# TODO: is there a better way?
 execute "untar steamcmd" do
   command "tar xzf steamcmd_linux.tar.gz -C #{node['tf2-server']['steam']['install_dir']} && touch .steamcmd_installed"
   cwd     "/home/#{node['tf2-server']['user']}"
   not_if  {File.exists?("/home/#{node['tf2-server']['user']}/.steamcmd_installed")}
 end
 
+# tells steam which app we want to download and if we want beta or not
 template "#{node['tf2-server']['steam']['install_dir']}/tf2_ds.txt" do
   source "tf2_ds.txt.erb"
   user   node['tf2-server']['user']
@@ -80,7 +86,20 @@ template "#{node['tf2-server']['steam']['install_dir']}/tf2_ds.txt" do
     })
 end
 
+# TODO: figure out why when i extract the steam_cmd tar that i can't override the default ubuntu owner
 execute "hacking ownership on tf2 install dir" do
   command "chown -R #{node['tf2-server']['user']}:#{node['tf2-server']['group']} #{node['tf2-server']['steam']['install_dir']}"
 end
 
+# default is to update tf2 every monday night @ 10pm, runs as tf2 game server user
+cron "update tf2" do
+  command node['tf2-server']['update']['cron']['command']
+  user    node['tf2-server']['user']
+  minute  node['tf2-server']['update']['cron']['minute']
+  hour    node['tf2-server']['update']['cron']['hour']
+  minute  node['tf2-server']['update']['cron']['minute']
+  day     node['tf2-server']['update']['cron']['day']
+  month   node['tf2-server']['update']['cron']['month']
+  weekday node['tf2-server']['update']['cron']['weekday']
+  only_if { node['tf2-server']['update']['enable'] }
+end
