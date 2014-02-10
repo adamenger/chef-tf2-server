@@ -1,4 +1,4 @@
-tf2-server-server Cookbook
+tf2-server Cookbook
 ============
 This cookbook will prep your server to be a Team Fortress 2 server.
 
