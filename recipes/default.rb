@@ -86,7 +86,7 @@ template "#{node['tf2-server']['steam']['install_dir']}/tf2_ds.txt" do
     })
 end
 
-# TODO: figure out why when i extract the steam_cmd tar that i can't override the default ubuntu owner
+# TODO: figure out why when i extract the steam_cmd tar why i can't override the default ubuntu owner
 execute "hacking ownership on tf2 install dir" do
   command "chown -R #{node['tf2-server']['user']}:#{node['tf2-server']['group']} #{node['tf2-server']['steam']['install_dir']}"
 end
