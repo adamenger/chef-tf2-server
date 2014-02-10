@@ -140,9 +140,10 @@ Default is enabled and set to run every Monday at 10pm.
 Usage
 -----
 
-e.g.
-Just include `tf2-server` in your node's `run_list`:
+#### Vagrant
+Make sure you have vagrant, vagrant-berkshelf and vagrant-omnibus installed. Then just ```vagrant up```!
 
+#### Chef 
 ```json
 {
   "name":"my_node",
