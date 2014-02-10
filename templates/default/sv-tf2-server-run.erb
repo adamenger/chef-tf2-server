@@ -1,0 +1,14 @@
+#!/bin/bash
+export PATH=<%= node['tf2-server']['steam']['install_dir'] %>/linux32:$PATH
+export HOME=/home/<%= node['tf2-server']['user'] %>
+exec 2>&1
+
+exec <%= node['runit']['chpst_bin'] %> \
+  -u <%= node['tf2-server']['user'] %>:<%= node['tf2-server']['group'] %> \
+  -U <%= node['tf2-server']['user'] %>:<%= node['tf2-server']['group'] %> \
+  <%= node['tf2-server']['tf2']['install_dir'] %>/./srcds_run -debug -game tf \
+  -ip <%= node['ipaddress'] %> \
+  -maxplayers 24 \
+  +map cp_dustbowl \
+  -steam_dir <%= node['tf2-server']['steam']['install_dir'] %> \
+  -steamcmd_script <%= node['tf2-server']['steam']['install_dir'] %>/tf2_ds.txt \
