@@ -7,13 +7,13 @@ This cookbook will prep your server to be a Team Fortress 2 server.
 Recipes
 -------
 
-#### default.rb
+### default.rb
 Creates user and group on the target system and downloads steam client under users home directory. Installs prerequisite packages and adds in any specified public keys to authorized_keys. After this we download and extract the steam client into the users home directory. Additionally, we enable a crontab entry for updating the tf2 installation every Monday at 10pm.
 
 Attributes
 ----------
 
-#### tf2-server::default
+### tf2-server::default
 <table>
   <tr>
     <th>Key</th>
@@ -83,7 +83,7 @@ Attributes
   </tr>
 </table>
 
-#### update attributes
+### update attributes
 Default is enabled and set to run every Monday at 10pm.
 <table>
   <tr>
