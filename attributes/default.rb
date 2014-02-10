@@ -6,7 +6,7 @@ default['tf2-server']['user']  = 'tf2-server'
 default['tf2-server']['group'] = 'tf2-server'
 
 default['tf2-server']['ssh']['public_keys'] = [
- 'your-public-key'
+ ''
 ]
 
 default['tf2-server']['packages']['debian'] = ['lib32gcc1', 'ia32-libs']
