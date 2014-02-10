@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: tf2
+# Cookbook Name:: tf2-server
 # Recipe:: default
 #
 # Copyright 2014, WTF Enterprises
