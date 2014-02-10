@@ -7,6 +7,22 @@
 # All rights reserved - Do Not Redistribute
 #
 
+# based on which platform, run an update of the package manager
+case node['platform_family']
+  when "debian", "ubuntu"
+    include_recipe "apt::default"
+  when "redhat", "centos", "fedora"
+    include_recipe "yum::default"
+    include_recipe "yum::epel"
+end
+
+# install build essential tools now that repos are updated
+include_recipe "build-essential"
+
+# install runit for process management
+include_recipe "runit"
+
+package "gdb"
 # create our user to run the game server
 user node['tf2-server']['user'] do
   supports :manage_home => true
@@ -31,6 +47,50 @@ end
 # drop in authorized keys from public_keys array, join them by newline
 file "/home/#{node['tf2-server']['user']}/.ssh/authorized_keys" do
   content node['tf2-server']['ssh']['public_keys'].join("\n")
+end
+
+# create tf2 config directory so we can drop in our server.cfg
+directory "#{node['tf2-server']['tf2']['install_dir']}/tf/cfg" do
+  action :create
+  mode   "0700"
+  user   node['tf2-server']['user']
+  group  node['tf2-server']['group']
+  recursive true
+end
+
+template "#{node['tf2-server']['tf2']['install_dir']}/tf/cfg/server.cfg" do
+  source "server.cfg.erb"
+  user   node['tf2-server']['user']
+  group  node['tf2-server']['group']
+  variables ({
+    # this is a deep hash
+    :config => node['tf2-server']['server']['config']
+    })
+end
+
+# drop in mapcycle, join them by newline
+file "#{node['tf2-server']['tf2']['install_dir']}/tf/cfg/mapcycle.txt" do
+  user    node['tf2-server']['user']
+  group   node['tf2-server']['group']
+  content node['tf2-server']['maps'].join("\n")
+end
+
+# drop in maplist, join them by newline
+file "#{node['tf2-server']['tf2']['install_dir']}/tf/cfg/maplist.txt" do
+  user    node['tf2-server']['user']
+  group   node['tf2-server']['group']
+  content node['tf2-server']['maps'].join("\n")
+end
+
+# drop in MOTD, join them by newline
+template "#{node['tf2-server']['tf2']['install_dir']}/tf/cfg/motd.txt" do
+  user    node['tf2-server']['user']
+  group   node['tf2-server']['group']
+  source  "motd.txt.erb"
+  variables ({
+    :server_name => node['tf2-server']['server']['config']['hostname'],
+    :maps        => node['tf2-server']['maps'],
+    })
 end
 
 # install packages from attributes, based on node platform
@@ -90,6 +150,8 @@ end
 execute "hacking ownership on tf2 install dir" do
   command "chown -R #{node['tf2-server']['user']}:#{node['tf2-server']['group']} #{node['tf2-server']['steam']['install_dir']}"
 end
+
+runit_service "tf2-server"
 
 # default is to update tf2 every monday night @ 10pm, runs as tf2 game server user
 cron "update tf2" do
