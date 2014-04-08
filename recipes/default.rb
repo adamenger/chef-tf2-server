@@ -22,7 +22,9 @@ include_recipe "build-essential"
 # install runit for process management
 include_recipe "runit"
 
+# one-off installation of gdb
 package "gdb"
+
 # create our user to run the game server
 user node['tf2-server']['user'] do
   supports :manage_home => true
@@ -82,7 +84,7 @@ file "#{node['tf2-server']['tf2']['install_dir']}/tf/cfg/maplist.txt" do
   content node['tf2-server']['maps'].join("\n")
 end
 
-# drop in MOTD, join them by newline
+# drop in MOTD, joined by newline
 template "#{node['tf2-server']['tf2']['install_dir']}/tf/cfg/motd.txt" do
   user    node['tf2-server']['user']
   group   node['tf2-server']['group']
